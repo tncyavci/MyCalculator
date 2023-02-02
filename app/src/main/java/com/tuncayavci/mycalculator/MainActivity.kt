@@ -7,30 +7,32 @@ import android.widget.Button
 import com.tuncayavci.mycalculator.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding : ActivityMainBinding
+
+    private  var _binding : ActivityMainBinding? = null
+    private val binding get() = _binding!!
 
     // Represent whether the lastly pressed key is numeric or not
-    var lastNumeric : Boolean = false
+    private var lastNumeric : Boolean = false
 
     // If true, don't allow to add another dot
-    var lastDot : Boolean = false
+    private var lastDot : Boolean = false
 
     private var inputText = binding.inputText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        _binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
     }
 
     fun onDigit(view: View) {
-        inputText.append((view as Button).text)
+        inputText?.append((view as Button).text)
             lastNumeric=true
     }
 
     fun onClear(view: View){
-        inputText.text = ""
+        inputText?.text = ""
             lastNumeric = false
             lastDot = false
     }
@@ -42,7 +44,7 @@ class MainActivity : AppCompatActivity() {
 
         // If the last appended values is numeric then append (".") or don't
         if(lastNumeric && !lastDot) {
-            inputText.append(".")
+            inputText?.append(".")
                 lastNumeric = false //Update the flag
                 lastDot = false // update the flag
         }
@@ -52,9 +54,9 @@ class MainActivity : AppCompatActivity() {
      * Append +,-,*,/ operators to the TextView s per Button.Text
      */
     fun operator(view: View) {
-        inputText.text.let {
+        inputText?.text.let {
             if(lastNumeric && !isOperatorAdded(it.toString())) {
-                inputText.append((view as Button).text)
+                inputText?.append((view as Button).text)
                 lastNumeric = false // update the flag
                 lastDot = false // update the DOT flag
             }
@@ -68,7 +70,7 @@ class MainActivity : AppCompatActivity() {
         // If the last input is a number only, solution can be found
         if(lastNumeric) {
             // Read the textView value
-            var textValue = inputText.text.toString()
+            var textValue = inputText?.text.toString()
             var prefix = ""
 
             try {
@@ -129,7 +131,7 @@ class MainActivity : AppCompatActivity() {
     /**
      *  Remove the zero after decimal point
      */
-    fun removeZeroAfterDot(result: String): String{
+    private fun removeZeroAfterDot(result: String): String{
         var value = result
 
         if (result.contains(".0")){
@@ -137,4 +139,10 @@ class MainActivity : AppCompatActivity() {
         }
         return value
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding= null
+    }
+
 }
