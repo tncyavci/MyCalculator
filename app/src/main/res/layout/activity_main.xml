@@ -12,7 +12,6 @@
         android:id="@+id/inputText"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:text="@string/number_text"
         android:textSize="40sp"
         android:gravity="end|center_vertical|bottom"
         android:padding="10dp"
@@ -213,6 +212,7 @@
             android:text="0"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
+            android:onClick="onDigit"
             />
 
         <Button

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.TextView
 import com.tuncayavci.mycalculator.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -17,13 +18,15 @@ class MainActivity : AppCompatActivity() {
     // If true, don't allow to add another dot
     private var lastDot : Boolean = false
 
-    private var inputText = binding.inputText
+    private var inputText: TextView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        inputText = binding.inputText
     }
 
     fun onDigit(view: View) {
@@ -53,7 +56,7 @@ class MainActivity : AppCompatActivity() {
     /**
      * Append +,-,*,/ operators to the TextView s per Button.Text
      */
-    fun operator(view: View) {
+    fun onOperator(view: View) {
         inputText?.text.let {
             if(lastNumeric && !isOperatorAdded(it.toString())) {
                 inputText?.append((view as Button).text)
@@ -98,6 +101,60 @@ class MainActivity : AppCompatActivity() {
                          * if the result contains the zero after decimal point will remove it.
                          * and display the result TextView
                          */
+                        inputText?.text = removeZeroAfterDot((one.toDouble() / two.toDouble()).toString())
+                    }
+                    textValue.contains("*") -> {
+                        // will split the value using multiplication operator
+                        val splitValue = textValue.split("*")
+
+                        var one = splitValue[0]
+                        val two = splitValue[1]
+
+                        if (prefix.isNotEmpty()) { // If the prefix is not empty then we will append it with first value i.e one.
+                            one = prefix + one
+                         }
+
+                        /** Here as the value one and two will be calculated based on the operator and
+                        if the result contains the zero after decimal point will remove it.
+                        And display the result to TextView
+                         */
+                        inputText?.text = removeZeroAfterDot((one.toDouble() * two.toDouble()).toString())
+                    }
+                    textValue.contains("-") -> {
+
+                        // If the inputValue contains the Subtraction operator
+                        // Will split the inputValue using Subtraction operator
+                        val splitedValue = textValue.split("-")
+
+                        var one = splitedValue[0] // Value One
+                        val two = splitedValue[1] // Value Two
+
+                        if (prefix.isNotEmpty()) { // If the prefix is not empty then we will append it with first value i.e one.
+                            one = prefix + one
+                        }
+
+                        /** Here as the value one and two will be calculated based on the operator and
+                        if the result contains the zero after decimal point will remove it.
+                        And display the result to TextView
+                         */
+                        inputText?.text = removeZeroAfterDot((one.toDouble() - two.toDouble()).toString())
+                    }
+                    textValue.contains("+") -> {
+                        // If the inputValue contains the Addition operator
+                        // Will split the inputValue using Addition operator
+                        val splitedValue = textValue.split("+")
+
+                        var one = splitedValue[0] // Value One
+                        val two = splitedValue[1] // Value Two
+
+                        if (prefix.isNotEmpty()) { // If the prefix is not empty then we will append it with first value i.e one.
+                            one = prefix + one
+                        }
+
+                        /**Here as the value one and two will be calculated based on the operator and
+                        if the result contains the zero after decimal point will remove it.
+                        And display the result to TextView
+                         */
                         inputText?.text = removeZeroAfterDot((one.toDouble() + two.toDouble()).toString())
                     }
                 }
@@ -115,7 +172,7 @@ class MainActivity : AppCompatActivity() {
 
         /**
          * Here first we will check that if the value starts with "-" then will ignore it.
-         * As it is the result value nd perform further calculation.
+         * As it is the result value and perform further calculation.
          */
 
         return if(value.startsWith("-")) {
